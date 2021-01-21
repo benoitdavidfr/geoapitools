@@ -1,0 +1,8 @@
+title: outils GeoApi
+path: /geoapi/tools
+doc: |
+journal: |
+  21/1/2021 :
+    création
+phpScripts:
+  - /geoapi/tools/json.php
