@@ -7,6 +7,11 @@ doc: |
   soit à 'application/ld+json' soit à 'application/json,application/geo+json'
   Affiche le résultat en Yaml en remplacant les URL par des liens
 journal: |
+  20/7/2021:
+    - correction des types MIME reconnus pour JSON et HTML
+      - vu la variété du format de l'encodage, il faudrait probablement utiliser un preg_match()
+  4/2/2021:
+    - ajout de l'option http ['ignore_errors' => '1'] pour éviter une erreur de lecture lors d'une erreur Http
   21/1/2021:
     - transfert de comhisto dans geoapi/tools
     - améliorations
@@ -24,10 +29,13 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
-// types mimes reconnus pour json et html
+// types MIME reconnus pour JSON et HTML dans le contenu retourné
 define('CONTENT_TYPES', [
   'json'=> [
-    'application/ld+json','application/json','application/json; charset="utf8"',
+    'application/ld+json',
+    'application/ld+json; charset="utf-8"',
+    'application/json',
+    'application/json; charset="utf-8"',
     'application/vnd.oai.openapi+json;version=3.0',
   ],
   'geojson'=> ['application/geo+json', 'application/geo+json; charset="utf8"'],
@@ -106,7 +114,7 @@ if (($action == 'doc') || !$url) {
     </ul>
     De plus, s'il s'agit d'un document GeoJSON alors propose sa visualisation sur http://geojson.io/
   ";
-  echo "Les types MIMES reconnus sont:",
+  echo "</p>Les types MIMES reconnus sont:",
   '<pre>',Yaml::dump(['typesMimes'=> CONTENT_TYPES], 3, 2),"</pre>\n";
   if (!$url)
     echo "Pour supprimer cette doc, fournir une URL.\n";
@@ -133,6 +141,7 @@ $accept = isset($_GET['ld']) ? 'application/ld+json' : 'application/json,applica
 $opts = [
   'http'=> [
     'method'=> 'GET',
+    'ignore_errors' => '1',
     'header'=> "Accept: $accept\r\n"
               ."Accept-language: en\r\n"
               ."Cookie: foo=bar\r\n",
