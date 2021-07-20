@@ -3,7 +3,7 @@
 name: rdfnav.php
 title: rdfnav.php - navigateur RDF
 doc: |
-  Voir la doc ci-dessous
+  Voir la doc dans le code ou dans <a href='http://localhost/geoapi/tools/rdfnav.php'>l'exécution du script</a>.
 journal: |
   20/7/2021:
     - création

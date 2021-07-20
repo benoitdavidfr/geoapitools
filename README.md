@@ -1,6 +1,6 @@
 ## geoapi/tools
-Répertoire d'outils autour des API:
+Outils autour des API:
 
-  - outil [json.php](https://geoapi.fr/tools/json.php) pour effectuer des requêtes JSON
-    et visualiser le résultat.  
-  - outil [rdfnav.php](https://geoapi.fr/tools/rdfnav.php) pour naviguer plus facilement dans les données liées.
+  - [json.php](https://geoapi.fr/tools/json.php) effectue des requêtes JSON notamment sur des API
+    et visualise le résultat en Yaml.  
+  - [rdfnav.php](https://geoapi.fr/tools/rdfnav.php) facilite la navigation dans les données liées.

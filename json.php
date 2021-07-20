@@ -10,6 +10,7 @@ journal: |
   20/7/2021:
     - correction des types MIME reconnus pour JSON et HTML
       - vu la variété du format de l'encodage, il faudrait probablement utiliser un preg_match()
+    - modif du répertoire vendor
   4/2/2021:
     - ajout de l'option http ['ignore_errors' => '1'] pour éviter une erreur de lecture lors d'une erreur Http
   21/1/2021:
