@@ -3,8 +3,7 @@
 name: rdfnav.php
 title: rdfnav.php - navigateur RDF
 doc: |
-
-
+  Voir la doc ci-dessous
 journal: |
   20/7/2021:
     - création
@@ -48,8 +47,8 @@ Affichage du Turtle formatté en Html<br>
 
 <h4>Exemples</h4>
 <ul>
-<li><a href='?url=http://localhost/geoapi/dido/api.php/v1/dcatexport.rdf'>http://localhost/geoapi/dido/api.php/v1/dcatexport.rdf</a>
 <li><a href='?url=https://dido.geoapi.fr/v1/dcatexport.jsonld'>https://dido.geoapi.fr/v1/dcatexport.jsonld</a>
+<li><a href='?url=http://localhost/geoapi/dido/api.php/v1/dcatexport.rdf'>http://localhost/geoapi/dido/api.php/v1/dcatexport.rdf (uniquement en local)</a>
 </ul>
 EOT;
  

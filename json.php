@@ -24,7 +24,7 @@ journal: |
 */
 //ini_set('max_execution_time', 30*60);
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;

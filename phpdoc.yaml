@@ -2,6 +2,8 @@ title: outils GeoApi
 path: /geoapi/tools
 doc: |
   Outils utiles pour les API.
+  Plusieurs modules Php installés dans ce répertoire.
+  synchronisé vers https://geoapi.fr/tools/ par http://localhost/synchro.php?remote=http://prod.geoapi.fr&dir=geoapi/tools
 journal: |
   20/7/2021 :
     ajout rdfnav.php
