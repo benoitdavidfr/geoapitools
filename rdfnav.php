@@ -5,6 +5,8 @@ title: rdfnav.php - navigateur RDF
 doc: |
   Voir la doc dans le code ou dans <a href='http://localhost/geoapi/tools/rdfnav.php'>l'exécution du script</a>.
 journal: |
+  21/7/2021:
+    - gestion du renvoi vers un document non LD
   20/7/2021:
     - création
 */
@@ -37,6 +39,8 @@ Si le Content-Type est application/x-turtle ou text/plain ou text/turtle<br>
 alors pas de conversion<br>
 sinonSi le Content-Type est application/ld+json ou application/rdf+xml<br>
 alors conversion en Turtle<br>
+sinonSi le Content-Type est text/html ou application/pdf ou application/json ou text/csv<br>
+alors renvoi vers le document<br>
 sinon<br>
 &nbsp;&nbsp;erreur<br>
 
@@ -52,7 +56,7 @@ Affichage du Turtle formatté en Html<br>
 </ul>
 EOT;
  
-// transforme le contenu de $http_response_header en un array avec cls significatives
+// transforme le contenu de $http_response_header en un array clés => valeurs
 function response_header(array $input): array {
   if (!$input) return ['error'=> '$http_response_header non défini'];
   $output = ['returnCode'=> array_shift($input)];
@@ -91,7 +95,7 @@ $context = stream_context_create([
 ]);
 //echo "url=$url\n";
 $contents = @file_get_contents($url, false, $context);
-$response_header = response_header($http_response_header);
+$response_header = response_header($http_response_header ?? []);
 if (($contents === FALSE) || !preg_match('!^HTTP/1\.. 200!', $response_header['returnCode'])) {
   echo "<table border=1>$form<tr><td>statut</td><td><pre><b>ERREUR</b>: ",
        json_encode($response_header, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
@@ -100,17 +104,24 @@ if (($contents === FALSE) || !preg_match('!^HTTP/1\.. 200!', $response_header['r
 }
 //echo "<pre><b>OK</b>, http_response_header = "; print_r($response_header); echo "</pre>\n";
 
-if (preg_match('!^application/ld\+json!', $response_header['Content-Type'])) {
+$cType = $response_header['Content-Type'];
+if (preg_match('!^application/ld\+json!', $cType)) { // JSON-LD
   $data = new \EasyRdf\Graph($url);
   $data->parse($contents, 'jsonld', $url);
   $contents = $data->serialise('turtle');
 }
-elseif (preg_match('!^(application/rdf\+xml|text/xml)!', $response_header['Content-Type'])) {
+elseif (preg_match('!^(application/rdf\+xml|text/xml)!', $cType)) { // RDF/XML
   $data = new \EasyRdf\Graph($url);
   $data->parse($contents, 'rdf', $url);
   $contents = $data->serialise('turtle');
 }
-elseif (!preg_match('!^(application/x-turtle|text/plain|text/turtle)!', $response_header['Content-Type'])) {
+elseif (preg_match('!^(application/x-turtle|text/plain|text/turtle)!', $cType)) { // Turtle => pas de conversion
+}
+elseif (preg_match('!^(text/html|application/json|text/csv|application/pdf)!', $cType)) { // doc classique => renvoie vers lui
+  header("Location: $url");
+  die("Renvoi vers $url\n");
+}
+else { // type non reconnu
   die("<table border=1>$form"
       ."<tr><td>statut</td><td><b>En-tête ".$response_header['Content-Type']." non comprise</b></td></tr>"
       ."</table>\n");
@@ -122,11 +133,11 @@ echo "<table border=1>$form",
      '<pre>';
 
 // le texte à afficher est en Turtle dans $contents
-while (preg_match('!<(http[^>]+)>!', $contents, $matches)) {
+while (preg_match('!<((http|mailto)[^>]+)>!', $contents, $matches)) {
   //print_r($matches);
   $url = $matches[1];
   $replacement = "<a href='?url=".urlencode($url)."'>$url</a>";
-  $contents = preg_replace('!<http[^>]+>!', "&lt;$replacement&gt;", $contents, 1);
+  $contents = preg_replace('!<(http|mailto)[^>]+>!', "&lt;$replacement&gt;", $contents, 1);
 }
 
 echo $contents;
